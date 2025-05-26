@@ -2,8 +2,17 @@ import React from 'react';
 import img1 from "../assets/img.jpg";
 import { FaArrowRight } from "react-icons/fa";
 import { PiBookOpenText, PiMedalDuotone } from 'react-icons/pi';
+import { useNavigate } from "react-router-dom";
 
 const Abc = () => {
+
+    const navigate = useNavigate();
+
+   const handleCreateCourse = () => {
+    navigate("/courseIntroVideo");
+  };
+
+
   return (
     <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-10 rounded-xl flex flex-wrap md:flex-nowrap justify-between items-center gap-6 mb-6">
       
@@ -31,9 +40,12 @@ const Abc = () => {
       </div>
 
       {/* Button */}
-      <button className="px-5 py-2 border border-white rounded-lg flex items-center gap-2 shadow hover:bg-white hover:text-purple-700 transition">
-        Create a New Course <FaArrowRight />
-      </button>
+      <button
+      onClick={handleCreateCourse}
+      className="px-5 py-2 border border-white rounded-lg flex items-center gap-2 shadow hover:bg-white hover:text-purple-700 transition"
+    >
+      Create a New Course <FaArrowRight />
+    </button>
     </div>
   );
 };

@@ -16,6 +16,8 @@ import Message from "./components/Message.jsx";
 import MyCourses from "./components/MyCourses.jsx";
 import Announcement from "./components/Announcement.jsx";
 import OrderHistory from "./components/OrderHistory.jsx";
+import CourseIntroVideo from './components/Courses/CourseIntroVideo';
+import CourseInfoForm from "./components/Courses/CourseInfoForm.jsx";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,8 @@ const router = createBrowserRouter([
       },
      { path: "/profile", element : <Profile/>},
      { path: "/enrollCourse", element : <EnrollCourse/>},
+     {path: "/courseIntroVideo", element : <CourseIntroVideo/>},
+     {path: "/courseInfoForm", element : <CourseInfoForm/>},
      { path: "/wishlist", element : <Wishlist/>},
      { path: "/review" , element :  <Reviews/>},
      { path: "/myQuiz" , element :  <MyQuiz/>},
