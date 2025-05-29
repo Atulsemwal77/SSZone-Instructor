@@ -1,79 +1,140 @@
-import React from "react";
-
-const announcements = [
-  {
-    date: "March 26,2025",
-    time: "10.00am",
-    title: "Midterm Exam Schedule Released",
-    course: "Mathematics 201",
-  },
-  {
-    date: "March 27,2025",
-    time: "2.30pm",
-    title: "Guest Lecture on AI",
-    course: "Computer Science 310",
-  },
-  {
-    date: "March 28,2025",
-    time: "9.00am",
-    title: "Project Submission Deadline",
-    course: "Software Engineering 202",
-  },
-  {
-    date: "March 29,2025",
-    time: "11.15am",
-    title: "Library Orientation Session",
-    course: "Library Science 101",
-  },
-  {
-    date: "March 30,2025",
-    time: "1.00pm",
-    title: "Field Trip to Tech Park",
-    course: "Information Systems 220",
-  },
-  {
-    date: "March 31,2025",
-    time: "4.45pm",
-    title: "Quiz on Chapter 5",
-    course: "Physics 102",
-  },
-  {
-    date: "April 1,2025",
-    time: "3.00pm",
-    title: "Internship Orientation",
-    course: "Career Development",
-  },
-  {
-    date: "April 2,2025",
-    time: "10.30am",
-    title: "New Lab Timings",
-    course: "Chemistry 103",
-  },
-  {
-    date: "April 3,2025",
-    time: "12.00pm",
-    title: "Course Feedback Reminder",
-    course: "English Literature 104",
-  },
-  {
-    date: "April 4,2025",
-    time: "5.15pm",
-    title: "Sports Day Schedule",
-    course: "Physical Education",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { FaX } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Announcement = () => {
+  const [open, setOpen] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+
+  const [title, setTitle] = useState("");
+  const [course, setCourse] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+
+  // Fetch announcements from backend
+  const getAnnouncement = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND}ancument/getannouncement`
+      );
+      setAnnouncements(response.data);
+    } catch (error) {
+      toast.error("Failed to fetch announcements.");
+    }
+  };
+
+  useEffect(() => {
+    getAnnouncement();
+  }, []);
+
+  // Add new announcement
+  const handleAddAnnouncement = async (e) => {
+    e.preventDefault();
+
+    if (!title || !course || !date || !time) {
+      return toast.error("Please fill in all fields.");
+    }
+
+    const formData = { title, course, date, time };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND}ancument/announcement`,
+        formData
+      );
+
+      toast.success("Announcement added successfully!");
+      setAnnouncements((prev) => [response.data, ...prev]);
+
+      clearForm();
+    } catch (error) {
+      toast.error("Failed to add announcement.");
+    }
+  };
+
+  // Update announcement
+  const handleUpdateAnnouncement = async (e) => {
+    e.preventDefault();
+
+    if (!title || !course || !date || !time) {
+      return toast.error("Please fill in all fields.");
+    }
+
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND}ancument/announcement/${editId}`,
+        { title, course, date, time }
+      );
+
+      toast.success("Announcement updated successfully!");
+      const updatedList = announcements.map((item) =>
+        item._id === editId ? response.data : item
+      );
+      setAnnouncements(updatedList);
+
+      clearForm();
+      setIsEditing(false);
+      setEditId(null);
+      setOpen(false);
+    } catch (error) {
+      toast.error("Failed to update announcement.");
+    }
+  };
+
+  // Delete announcement
+  const handleDeleteAnnouncement = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this announcement?")) return;
+
+    try {
+      await axios.delete(`${import.meta.env.VITE_BACKEND}ancument/announcement/${id}`);
+      setAnnouncements((prev) => prev.filter((item) => item._id !== id));
+      toast.success("Announcement deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete announcement.");
+    }
+  };
+
+  // Prepare form for editing announcement
+  const handleEdit = (announcement) => {
+    setTitle(announcement.title);
+    setCourse(announcement.course);
+    setDate(announcement.date);
+    setTime(announcement.time);
+    setEditId(announcement._id);
+    setIsEditing(true);
+    setOpen(true);
+  };
+
+  // Clear form fields
+  const clearForm = () => {
+    setTitle("");
+    setCourse("");
+    setDate("");
+    setTime("");
+  };
+
   return (
-    <div className=" p-6">
+    <div className="p-6 relative">
       <h1 className="text-2xl font-semibold mb-4">Announcement</h1>
 
       <div className="bg-blue-100 p-6 rounded-lg mb-6 flex items-center justify-between">
         <div>
-          <p className="text-lg font-semibold">Notify your all students.</p>
+          <p className="text-lg font-semibold">Notify all your students.</p>
           <p className="text-sm text-gray-700">Create Announcement</p>
         </div>
-        <button className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+        <button
+          className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition"
+          onClick={() => {
+            clearForm();
+            setIsEditing(false);
+            setEditId(null);
+            setOpen(true);
+          }}
+        >
           Add New Announcement
         </button>
       </div>
@@ -85,9 +146,13 @@ const Announcement = () => {
           <div>Status</div>
         </div>
 
+        {announcements.length === 0 && (
+          <div className="p-4 text-center text-gray-600">No announcements found.</div>
+        )}
+
         {announcements.map((item, idx) => (
           <div
-            key={idx}
+            key={item._id || idx}
             className="grid grid-cols-3 items-start text-sm text-gray-800 border-b px-4 py-3"
           >
             <div>
@@ -99,11 +164,80 @@ const Announcement = () => {
               <p className="text-gray-500 text-xs">Course: {item.course}</p>
             </div>
             <div>
-              <button className="text-red-500 hover:underline">Delete</button>
+              <button
+                className="text-blue-600 hover:underline mr-4"
+                onClick={() => handleEdit(item)}
+              >
+                Update
+              </button>
+              <button
+                className="text-red-500 hover:underline"
+                onClick={() => handleDeleteAnnouncement(item._id)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {open && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-[90%] md:w-[600px] p-6 relative">
+            <button
+              className="absolute top-4 right-4 text-gray-600 hover:text-red-600"
+              onClick={() => {
+                setOpen(false);
+                clearForm();
+                setIsEditing(false);
+                setEditId(null);
+              }}
+            >
+              <FaX className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-xl font-semibold mb-4">
+              {isEditing ? "Update Announcement" : "New Announcement"}
+            </h2>
+
+            <form className="grid grid-cols-1 gap-4" onSubmit={isEditing ? handleUpdateAnnouncement : handleAddAnnouncement}>
+              <input
+                type="text"
+                placeholder="Title"
+                className="border p-2 rounded"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Course"
+                className="border p-2 rounded"
+                value={course}
+                onChange={(e) => setCourse(e.target.value)}
+              />
+              <input
+                type="date"
+                className="border p-2 rounded"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="border p-2 rounded"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+              >
+                {isEditing ? "Update" : "Submit"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

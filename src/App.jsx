@@ -21,11 +21,12 @@ import Dashboard from './components/sidebar';
 import Navbar from './components/Navbar';
 import { Outlet } from 'react-router-dom';
 import Abc from './components/abc';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   return (
     <>
-      <Navbar />
+      <Navbar  />
       <div className='flex'>
         <Dashboard />
         <div  className='px-2 w-full'>
@@ -33,6 +34,7 @@ const App = () => {
           <Outlet className=" " />
         </div>
       </div>
+      <ToastContainer autoClose={1000} />
     </>
   );
 };

@@ -42,7 +42,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-100 font-sans">
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-100 font-sans  ">
       {/* Mobile Header */}
       <div className="flex items-center justify-between bg-white p-4 shadow-md md:hidden">
         {/* <h1 className="text-xl font-semibold">Dashboard</h1> */}
@@ -64,7 +64,7 @@ export default function Dashboard() {
     </button>
   </div>
 
-  <nav className="space-y-2 text-gray-600">
+  <nav className="space-y-2 text-gray-600 ">
     {navLinks.map((link, index) =>
       link.isDivider ? (
         <hr key={index} className="my-4" />
