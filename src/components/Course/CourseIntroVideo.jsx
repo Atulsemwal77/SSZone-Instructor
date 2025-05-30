@@ -52,7 +52,7 @@ console.log('lessons',lessons);
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/course/courseIntroVideo",
+        `${import.meta.env.VITE_BACKEND}/api/course/courseIntroVideo`,
         { videoUrl },
         {
           headers: {
@@ -72,7 +72,7 @@ console.log('lessons',lessons);
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/course/module",
+        `${import.meta.env.VITE_BACKEND}/api/course/module`,
         {
           title: moduleTitle,
         }
@@ -92,7 +92,7 @@ console.log('lessons',lessons);
 const handleUploadModule = async () => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/modules/module",
+      `${import.meta.env.VITE_BACKEND}/api/modules/module`,
       {
         title: moduleName,
         subTopic: subTopic,
@@ -127,7 +127,7 @@ const handleUploadModule = async () => {
   };
 
   try {
-    const response = await fetch("http://localhost:4000/api/lesson/add", {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/lesson/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(lessonData)
@@ -149,7 +149,7 @@ const handleUploadModule = async () => {
 
 useEffect(() => {
   const fetchLessons = async () => {
-    const res = await fetch("http://localhost:4000/api/lesson/all");
+    const res = await fetch(`${import.meta.env.VITE_BACKEND}/api/lesson/all`);
     const data = await res.json();
     if (data.success) {
       setLessons(data.data);
@@ -161,7 +161,7 @@ useEffect(() => {
 
 const handleDeleteLesson = async (lessonId) => {
   try {
-    const res = await fetch(`http://localhost:4000/api/lesson/delete/${lessonId}`, {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND}/api/lesson/delete/${lessonId}`, {
       method: "DELETE",
     });
 
@@ -183,7 +183,7 @@ const handleDeleteLesson = async (lessonId) => {
 
 const fetchQuizData = async () => {
   try {
-    const response = await fetch('http://localhost:4000/api/quiz');
+    const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/quiz`);
     const data = await response.json();
     if (data.success) {
       setQuizList(data.quizzes);
@@ -208,7 +208,7 @@ const handleUploadQuiz = async () => {
   };
 
   try {
-    const response = await fetch('http://localhost:4000/api/quiz', {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/quiz`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -231,7 +231,7 @@ const handleUploadQuiz = async () => {
 
   const fetchAssignments = async () => {
   try {
-    const res = await fetch('http://localhost:4000/api/assignment');
+    const res = await fetch(`${import.meta.env.VITE_BACKEND}/api/assignment`);
     const data = await res.json();
     if (data.success) {
       setAssignments(data.assignments);
@@ -261,7 +261,7 @@ const handleUploadAssignment = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:4000/api/assignment', {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/assignment`, {
       method: 'POST',
       body: formData, // use FormData for file upload
     });

@@ -19,7 +19,7 @@ const Announcement = () => {
   const getAnnouncement = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND}ancument/getannouncement`
+        `${import.meta.env.VITE_BACKEND}/api/ancument/getannouncement`
       );
       setAnnouncements(response.data);
     } catch (error) {
@@ -43,7 +43,7 @@ const Announcement = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND}ancument/announcement`,
+        `${import.meta.env.VITE_BACKEND}/api/ancument/announcement`,
         formData
       );
 
@@ -66,7 +66,7 @@ const Announcement = () => {
 
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND}ancument/announcement/${editId}`,
+        `${import.meta.env.VITE_BACKEND}/api/ancument/announcement/${editId}`,
         { title, course, date, time }
       );
 
@@ -90,7 +90,7 @@ const Announcement = () => {
     if (!window.confirm("Are you sure you want to delete this announcement?")) return;
 
     try {
-      await axios.delete(`${import.meta.env.VITE_BACKEND}ancument/announcement/${id}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND}/api/ancument/announcement/${id}`);
       setAnnouncements((prev) => prev.filter((item) => item._id !== id));
       toast.success("Announcement deleted successfully!");
     } catch (error) {
